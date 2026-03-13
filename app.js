@@ -52,6 +52,34 @@ app.delete("/posts/:id",(req,res)=>{
     })
 })
 
+
+//SHOW//
+
+app.get("/posts/:id",(req,res)=>{
+    const postId=req.params.id
+    const sql="SELECT * FROM posts WHERE id = ?"
+    connection.query (sql,[postId],(err,result)=>{
+        if(err){
+            console.error(err)
+            return res.status(500).json({
+                success:false,
+                message:"Error while searching post"
+            })
+        }
+        if(result.length===0){
+            return res.status(404).json({
+                success:false,
+                message:"Post non found"
+            })
+        }
+        res.json({
+            success:true,
+            message:"Post found successfully",
+            post: result[0]
+        })
+    })
+})
+
 app.listen(port,()=>{
     console.log("Server listening on http://localhost:3000/")
 })
