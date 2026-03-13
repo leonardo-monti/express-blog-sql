@@ -8,6 +8,9 @@ app.get ("/",(req,res)=>{
     res.send ("Hello World")
 })
 
+
+//INDEX//  
+
 app.get ("/posts",(req,res)=>{
     const sql= "SELECT * FROM posts"
     connection.query(sql, (err,results)=>{
@@ -22,6 +25,30 @@ app.get ("/posts",(req,res)=>{
             message:"Post del database",
             result:results
         })
+    })
+})
+
+//DESTROY//
+
+app.delete("/posts/:id",(req,res)=>{
+    const postId= req.params.id
+    const sql="DELETE FROM posts WHERE id = ?"
+
+    connection.query(sql,[postId],(err,result)=>{
+        if(err){
+            console.error(err)
+            return res.status(500).json({
+                success:false,
+                message:"Error while deleting post"
+            })
+        }
+        if(result.affectedRows===0){
+            return res.status(404).json({
+                success:false,
+                message:"Post not found"
+            })
+        }
+        res.status(204).send()
     })
 })
 
